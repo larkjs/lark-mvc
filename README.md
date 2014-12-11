@@ -12,7 +12,7 @@ MVC for lark.js
 
 在 bootstrap 中启用本模块
 
-```javascript
+```
 var larkMVC = require('lark-mvc')
 var app = require('lark')
 app.use(larkMVC()) // lark 默认是支持本模块的，本行代码可以删除
@@ -28,7 +28,7 @@ model 层又分3层: pageService, dataService, dao， 功能如下:
 
 pageService 样例:
 
-```javascript
+```
 var pageService = require('lark-mvc').pageService
 var demo = pageService.create('demo')
 demo.render = function(){
@@ -48,12 +48,15 @@ module.exports = demo
 ```
 
 action 层调
-```javascript
+
+```
 this.pageService.demo.render() [ok]
 this.dataService.demo.getArticles() [no]
 ```
+
 dataService 样例:
-```javascript
+
+```
 var dataService = require('lark-mvc').dataService
 var demo = dataService.create('demo')
 demo.getData = * function(){
@@ -68,9 +71,12 @@ demo.getData = * function(){
 
 module.exports = demo
 ```
+
 层之间hook样例：
-```javascript
+
+```
 pageSerice.on('beferDataService', function(params){
     validate(params)
 })
 ```
+
