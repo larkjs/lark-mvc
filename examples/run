@@ -1,2 +1,2 @@
 #/bin/bash
-node --harmony index.js
+node --harmony examples/index.js
