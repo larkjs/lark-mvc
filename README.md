@@ -8,6 +8,12 @@ MVC for lark.js
     * app中只能相邻层调用，不允许跨层调用
     * hook功能支持：支持hook功能，在跨层调用前后，发送相应事件，添加自定义逻辑。
 
+## Install:
+
+```
+npm install lark-mvc
+```
+
 ## 示例:
 
 在 bootstrap 中启用本模块
