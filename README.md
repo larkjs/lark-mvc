@@ -80,6 +80,19 @@ demo.getData = * function(){
 module.exports = demo
 ```
 
+dao 样例:
+
+```
+var dao = require('lark-mvc').dataService
+var demo = dao.create('dao')
+demo.getData = * function(){
+    db = redis.conn()
+    data = db.get('test-key')
+    return data
+}
+module.exports = demo
+```
+
 层之间hook样例：
 
 ```
