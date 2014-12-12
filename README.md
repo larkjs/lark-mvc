@@ -1,5 +1,7 @@
 MVC for lark.js
 
+  [![NPM version][npm-image]][npm-url]
+
 一个支持MVC模式的中间件
 
 ## 功能:

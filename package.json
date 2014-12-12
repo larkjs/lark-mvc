@@ -1,0 +1,30 @@
+{
+  "name": "lark-mvc",
+  "version": "0.0.3",
+  "description": "MVC for lark.js",
+  "main": "index.js",
+  "directories": {
+    "example": "examples",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/larkjs/lark-mvc.git"
+  },
+  "keywords": [
+    "lark.js",
+    "koa"
+  ],
+  "author": "zezhou",
+  "license": "FreeBSD",
+  "bugs": {
+    "url": "https://github.com/larkjs/lark-mvc/issues"
+  },
+  "dependencies": {
+      "rd": "~0.0.2"
+  },
+  "homepage": "https://www.npmjs.com/package/lark-mvc"
+}
