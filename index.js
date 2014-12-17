@@ -3,7 +3,6 @@ var rd = require('rd');
 var layerproxy = require("./lib/layerproxy")
 
 var larkMVC = function(options){
-    //var dirs = DEFAULT_LAYER
     if (!options || !options.path) {
         var path = 'models'
     }else{

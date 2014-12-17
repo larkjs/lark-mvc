@@ -1,7 +1,5 @@
-//var pageService = require('lark-mvc').pageService
-var pageService = require('../../../index.js').pageService
-var demo = pageService.create('demo')
+var demo = require('lark-mvc').pageService.create('demo')
 demo.render = function(){
-    return this.dataServices.demo.getData() + 'demo pageService is loaded!'
+    return this.dataServices.demo.getData() + '\ndemo pageService is loaded!'
 }
 module.exports = demo

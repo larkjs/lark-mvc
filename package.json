@@ -1,14 +1,14 @@
 {
   "name": "lark-mvc",
-  "version": "0.1.1",
-  "description": "MVC for lark.js",
+  "version": "0.2.0",
+  "description": "MVC for building web server with lark.js",
   "main": "index.js",
   "directories": {
     "example": "examples",
     "test": "test"
   },
   "scripts": {
-    "test": "grunt test"
+    "test": "NODE_ENV=test ./node_modules/.bin/mocha --harmony-generators --require should test/"
   },
   "repository": {
     "type": "git",
@@ -18,13 +18,18 @@
     "lark.js",
     "koa"
   ],
-  "author": "zezhou",
+  "author": "lark.js Team",
   "license": "FreeBSD",
   "bugs": {
     "url": "https://github.com/larkjs/lark-mvc/issues"
   },
   "dependencies": {
       "rd": "~0.0.2"
+  },
+  "devDependencies": {
+      "mocha": "^2.0.1",
+      "should": "^4.4.1",
+      "supertest": "^0.15.0"
   },
   "homepage": "https://www.npmjs.com/package/lark-mvc"
 }
