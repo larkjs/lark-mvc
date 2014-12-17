@@ -2,6 +2,11 @@ var path = require('path');
 var rd = require('rd');
 var layerproxy = require("./lib/layerproxy")
 
+/**
+ * @param options
+ * @param options.path {string} locate to models, where files which type is js will automate load.  
+ */
+
 var larkMVC = function(options){
     if (!options || !options.path) {
         var path = 'models'

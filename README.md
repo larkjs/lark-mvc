@@ -5,9 +5,9 @@ MVC for building web server using lark.js
 
 ## Features:
 
-    - Seperate bussiness codes into `pageService`, `dataService` and `dao`, which accord to `MVC` concept. (And `C` inplements in `lark-router`).
-    - Make calling rules between MVC layers.
-    - Support hook between MVC layers.
+    * Seperate bussiness codes into `pageService`, `dataService` and `dao`, which accord to `MVC` concept. (`C`in `MVC` implements in `lark-router`).
+    * Make calling rules between MVC layers.
+    * Support hook between MVC layers.
 
 ## Install:
 
@@ -78,7 +78,11 @@ demo.getData = * function(){
 module.exports = demo
 ```
 
-At this monment, we have all done here. And then, run the app to see the results.
+We have all done here. And then, run the app to see the results.
+
+```
+node --harmony app.js
+```
 
 <hr>
 
