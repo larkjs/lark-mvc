@@ -6,7 +6,8 @@ app.use(mvc.middleware({
 }))
 .use(function *(next){
     yield next;
-    this.body = this.pageServices.demo.render()
+    this.body = this.pageServices.demo.render() +
+                this.pageServices.newlist.render()
 })
 
 app.listen(3000);
