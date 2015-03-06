@@ -16,7 +16,7 @@ var larkMVC = function(options){
     rd.eachFileFilterSync(path, /\.js$/, function (file) {
         var func = require(file)
         if (func instanceof Function){
-            func(layerproxy)
+            func(layerproxy, options.log)
         }
     });
     return function*(next) {
