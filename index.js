@@ -7,7 +7,7 @@ var layerproxy = require("./lib/layerproxy")
  * @param options.path {string} It locate to models, where files will automate load if its filetype is js.  
  */
 
-var larkMVC = function(options){
+var larkMVC = function(options, lark){
     if (!options || !options.path) {
         var path = 'models'
     }else{
@@ -16,7 +16,7 @@ var larkMVC = function(options){
     rd.eachFileFilterSync(path, /\.js$/, function (file) {
         var func = require(file)
         if (func instanceof Function){
-            func(layerproxy)
+            func(layerproxy, lark)
         }
     });
     return function*(next) {
