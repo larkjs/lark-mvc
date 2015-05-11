@@ -8,11 +8,7 @@ var layerproxy = require("./lib/layerproxy")
  */
 
 var larkMVC = function(options){
-    if (!options || !options.path) {
-        var path = 'models'
-    }else{
-        var path = options.path
-    }
+    var path = (!options || !options.path) ? 'models': options.path
     rd.eachFileFilterSync(path, /\.js$/, function (file) {
         var func = require(file)
         if (func instanceof Function){
