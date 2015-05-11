@@ -8,18 +8,71 @@ var layerproxy = require("./lib/layerproxy")
  */
 
 var larkMVC = function(options, lark){
-    var path = (!options || !options.path) ? 'models': options.path
+    if (!options || !options.path) {
+        var _path = 'models'
+    }else{
+        var _path = options.path
+    }
+    if (process.mainModule) {
+        _path = path.join(path.dirname(process.mainModule.filename), _path);
+    }
+    if (_path[_path.length - 1] !== '/') {
+        _path += '/';
+    }
+    rd.eachFileFilterSync(_path, /\.js$/, function (file) {
+        if (0 !== file.indexOf(_path)) {
+            throw new Error("File path " + file + " not expected, should be under " + _path);
+        }
+        var filename = path.basename(file)
+        if (filename && filename[0] === '.') {
+            return;
+        }        
+        var relativePath = file.slice(_path.length);
+        var _pathsplit = relativePath.split('/');
+        if (_pathsplit.length <= 1) {
+            throw new Error('Invalid model path : ' + _path);
+        }
+        var filename = _pathsplit[_pathsplit.length - 1];
+        _pathsplit[_pathsplit.length - 1] = path.basename(filename, path.extname(filename));
 
-    rd.eachFileFilterSync(path, /\.js$/, function (file) {
-        var func = require(file)
-        if (func instanceof Function){
-            func(layerproxy, lark)
+        var modelproxy = createModel(layerproxy, _pathsplit);
+
+        var model = require(file);
+        if (model instanceof Function) {
+            return model(layerproxy, lark);
+        }
+        else if (model instanceof Object && !Array.isArray(model)) {
+            for (var property in model) {
+                if (!!modelproxy[property]) {
+                    throw new Error('Property ' + property + ' in mvc.xxx in use!');
+                }
+                modelproxy[property] = model[property];
+            }
         }
     });
     return function*(next) {
         this.pageServices = layerproxy.pageServices
         yield next
     };
+}
+
+function createModel (layerproxy, _pathsplit, type) {
+    var type = type || _pathsplit.shift();
+    var name = _pathsplit.join('/');
+    switch (type) {
+        case 'dao' :
+            type = 'daoService';
+            break;
+        case 'dataServices' :
+            type = 'dataService';
+            break;
+        case 'pageServices' :
+            type = 'pageService';
+            break;
+        default :
+            throw new Error('Unknown model type ' + type);
+    }
+    return layerproxy[type].create(name);
 }
 
 var output = layerproxy;
