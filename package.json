@@ -1,6 +1,6 @@
 {
   "name": "lark-mvc",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "MVC for building web server with lark.js",
   "main": "index.js",
   "directories": {
