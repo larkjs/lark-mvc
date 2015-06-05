@@ -19,6 +19,7 @@ var larkMVC = function(options, lark){
     if (_path[_path.length - 1] !== '/') {
         _path += '/';
     }
+    options.ignore = options.ignore || 'helper';
     rd.eachFileFilterSync(_path, /\.js$/, function (file) {
         if (0 !== file.indexOf(_path)) {
             throw new Error("File path " + file + " not expected, should be under " + _path);
@@ -35,7 +36,10 @@ var larkMVC = function(options, lark){
         var filename = _pathsplit[_pathsplit.length - 1];
         _pathsplit[_pathsplit.length - 1] = path.basename(filename, path.extname(filename));
 
-        var modelproxy = createModel(layerproxy, _pathsplit);
+        var modelproxy = createModel(layerproxy, _pathsplit, null, options);
+        if (!modelproxy) {
+            return;
+        }
 
         var model = require(file);
         if (model instanceof Function) {
@@ -56,8 +60,11 @@ var larkMVC = function(options, lark){
     };
 }
 
-function createModel (layerproxy, _pathsplit, type) {
+function createModel (layerproxy, _pathsplit, type, options) {
     var type = type || _pathsplit.shift();
+    if (_pathsplit.indexOf(options.ignore) >=0) {
+        return;
+    }
     var name = _pathsplit.join('/');
     switch (type) {
         case 'dao' :
