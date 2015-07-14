@@ -61,7 +61,7 @@ var larkMVC = function(options, lark){
 
 function createModel (layerproxy, _pathsplit, type, options) {
     var type = type || _pathsplit.shift();
-    if (options && options.ignore && pathsplit.indexOf(options.ignore) >=0) {
+    if (options && options.ignore && _pathsplit.indexOf(options.ignore) >=0) {
         return;
     }
     var name = _pathsplit.join('/');
