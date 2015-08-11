@@ -19,7 +19,6 @@ var larkMVC = function(options, lark){
     if (_path[_path.length - 1] !== '/') {
         _path += '/';
     }
-    options.ignore = options.ignore || 'helper';
     rd.eachFileFilterSync(_path, /\.js$/, function (file) {
         if (0 !== file.indexOf(_path)) {
             throw new Error("File path " + file + " not expected, should be under " + _path);
@@ -67,7 +66,7 @@ function createModel (layerproxy, _pathsplit, type, options) {
     if ('string' === typeof ignore) {
         ignore = [ignore];
     }
-    if (_pathsplit.indexOf(options.ignore) >=0) {
+    if (options && options.ignore && _pathsplit.indexOf(options.ignore) >=0) {
         return;
     }
     var name = _pathsplit.join('/');
