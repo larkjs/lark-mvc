@@ -60,14 +60,17 @@ var larkMVC = function(options, lark){
 }
 
 function createModel (layerproxy, _pathsplit, type, options) {
-    options = options || {};
     var type = type || _pathsplit.shift();
-    var ignore = options.ignore || '';
-    if ('string' === typeof ignore) {
-        ignore = [ignore];
-    }
-    if (options && options.ignore && _pathsplit.indexOf(options.ignore) >=0) {
-        return;
+    if (options && options.ignore) {
+        if (!Array.isArray(options.ignore)) {
+            options.ignore = [options.ignore];
+        }
+        for (var i = 0; i < options.ignore.length; i++) {
+            var ignore = options.ignore[i];
+            if (_pathsplit.indexOf(ignore) >=0) {
+                return;
+            }
+        }
     }
     var name = _pathsplit.join('/');
     switch (type) {
