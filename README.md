@@ -86,7 +86,7 @@ node --harmony app.js
 
 <hr>
 
-一个支持MVC模式的中间件
+一个用来支持MVC模式开发Web服务的中间件
 
 ## 功能:
 
@@ -178,6 +178,14 @@ pageSerice.on('beferDataService', function(params){
     validate(params)
 })
 ```
+
+##CHANGELOG
+
+* 2015-11-25 V1.0.0 * 
+Changes:
+	* removing auto load models to simplify using
+	* add es6 and es7 features
+
 
 [npm-image]: https://img.shields.io/npm/v/lark-mvc.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/lark-mvc

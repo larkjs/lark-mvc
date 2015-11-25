@@ -1,5 +1,6 @@
-var demo = require('lark-mvc').dao.create('demo')
-demo.getData = function(){
-    return 'dao dataServices is loaded!'
+"use strict";
+module.exports = class ListDao extends require('lark-mvc').DaoService {
+    getData (){
+        return 'dao dataServices is loaded!'
+    }
 }
-module.exports = demo

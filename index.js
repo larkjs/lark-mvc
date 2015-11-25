@@ -1,94 +1,36 @@
-var path = require('path');
-var rd = require('rd');
-var layerproxy = require("./lib/layerproxy")
-
+"use strict";
 /**
- * @param options
- * @param options.path {string} It locate to models, where files will automate load if its filetype is js.  
+ * MVC layers protocol for web server.
+ *
+ * USAGE:
+ *  * loading module in koa *
+ *
+ *      koa.use(require("mvc").middleware)
+ *
+ *  * use module *
+ *
+ *      var mvc = require("mvc")
+ *      this.body = mvc.pageServices.demo.render()
+ *
+ *  * define models *
+ *
+ *      var DataService = require("mvc")
+ *      var AD_DataService = function(){DataService.call(this) }
+ *      Object.setPrototypeOf(AD_DataService.prototype, DataService.prototype, {"render": ...})
+ *      module.exports = AD_DataService
  */
 
-var larkMVC = function(options, lark){
-    if (!options || !options.path) {
-        var _path = 'models'
-    }else{
-        var _path = options.path
-    }
-    if (process.mainModule) {
-        _path = path.join(path.dirname(process.mainModule.filename), _path);
-    }
-    if (_path[_path.length - 1] !== '/') {
-        _path += '/';
-    }
-    rd.eachFileFilterSync(_path, /\.js$/, function (file) {
-        if (0 !== file.indexOf(_path)) {
-            throw new Error("File path " + file + " not expected, should be under " + _path);
-        }
-        var filename = path.basename(file)
-        if (filename && filename[0] === '.') {
-            return;
-        }        
-        var relativePath = file.slice(_path.length);
-        var _pathsplit = relativePath.split('/');
-        if (_pathsplit.length <= 1) {
-            throw new Error('Invalid model path : ' + _path);
-        }
-        var filename = _pathsplit[_pathsplit.length - 1];
-        _pathsplit[_pathsplit.length - 1] = path.basename(filename, path.extname(filename));
-
-        var modelproxy = createModel(layerproxy, _pathsplit, null, options);
-        if (!modelproxy) {
-            return;
-        }
-
-        var model = require(file);
-        if (model instanceof Function) {
-            return model(layerproxy, lark);
-        }
-        else if (model instanceof Object && !Array.isArray(model)) {
-            for (var property in model) {
-                if (!!modelproxy[property]) {
-                    throw new Error('Property ' + property + ' in mvc.xxx in use!');
-                }
-                modelproxy[property] = model[property];
-            }
-        }
-    });
-    return function*(next) {
-        this.pageServices = layerproxy.pageServices
-        yield next
-    };
+var mvc = module.exports = {
+    "middleware": require("./lib/middleware")
 }
 
-function createModel (layerproxy, _pathsplit, type, options) {
-    var type = type || _pathsplit.shift();
-    if (options && options.ignore) {
-        if (!Array.isArray(options.ignore)) {
-            options.ignore = [options.ignore];
-        }
-        for (var i = 0; i < options.ignore.length; i++) {
-            var ignore = options.ignore[i];
-            if (_pathsplit.indexOf(ignore) >=0) {
-                return;
-            }
-        }
-    }
-    var name = _pathsplit.join('/');
-    switch (type) {
-        case 'dao' :
-            type = 'daoService';
-            break;
-        case 'dataServices' :
-            type = 'dataService';
-            break;
-        case 'pageServices' :
-            type = 'pageService';
-            break;
-        default :
-            throw new Error('Unknown model type ' + type);
-    }
-    return layerproxy[type].create(name);
+var protocols = require("./lib/protocol")
+
+for (var protocol_name in protocols){
+    mvc[protocol_name] = protocols[protocol_name]
 }
 
-var output = layerproxy;
-output.middleware = larkMVC
-module.exports = output
+var layerproxys = require("./lib/layerproxy")
+for (var layerproxy_name in layerproxys){
+    mvc[layerproxy_name] = layerproxys[layerproxy_name]
+}

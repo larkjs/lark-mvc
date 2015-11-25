@@ -1,6 +1,6 @@
-module.exports = function(mvc){
-    var newlist = mvc.pageService.create('newlist')
-    newlist.render = function(){
-        return this.dataServices.demo.getData() + '\nnewlist pageService is loaded!'
+"use strict";
+module.exports = class NewList extends require('lark-mvc').PageService{
+    render (){
+        return this.dataServices.list.getData() + '\nnewlist pageService is loaded!'
     }
 }

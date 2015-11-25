@@ -1,5 +1,6 @@
 'use strict';
-
-exports.render = function () {
-    return this.dataServices.demo.getData + '\nsimplified pageService is loaded!";
+module.exports = class S extends require("lark-mvc").PageService{
+    render () {
+        return this.dataServices.demo.getData + '\nsimplified pageService is loaded!';
+    }
 }

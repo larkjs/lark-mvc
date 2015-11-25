@@ -1,4 +1,6 @@
-var demo = require('lark-mvc').pageService.create('demo')
-demo.render = function(){
-    return this.dataServices.demo.getData() + '\ndemo pageService is loaded!'
+"use strict";
+module.exports = class ListPageService extends require('lark-mvc').PageService {
+    render (){
+        return this.dataServices.list.getData() + '\ndemo pageService is loaded!'
+    }
 }
