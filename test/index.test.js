@@ -11,25 +11,40 @@
  */
 
 var request = require('supertest');
-var mvc = require('../index');
+var mvc = require('..');
+mvc.set_model_path("../examples/models")
 
 describe('index.js', function () {
     describe('mvc object', function(){
         it('should be an instanceof Object', function(done){
-            (mvc instanceof Object).should.equal(true);
+            (mvc instanceof Object).should.equal(true)
             done();
         })
     })
+    
+    /*
+    describe('mvc middleware', function(){
+        it('should exists and be right type', function(done){
+            (mvc.middleware).should.be.type('function')
+        })
+    })
 
-    describe('mvc object', function(){
-        it('should contains `page services`, `data services`, `dao` and `middleware` which have been defined', function(done){
+    describe('mvc protocols', function(){
+        it('should exists and be right type', function(done){
+            (mvc.PageService).should.be.a.Function;
+            (mvc.DataService).should.be.a.Function;
+            (mvc.DaoService).should.be.a.Function;
+        })
+    })
+
+    describe('mvc properties', function(){
+        it('should contains `page services`, `data services`, `dao`', function(done){
             (mvc.pageServices).should.be.type('object');
             (mvc.dataServices).should.be.type('object');
             (mvc.daoServices).should.be.type('object');
-            (mvc.PageService).should.be.a.Function;
             done();
         })
     })
-
+    */
 
 });

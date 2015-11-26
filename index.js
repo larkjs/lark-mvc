@@ -21,7 +21,10 @@
  */
 
 var mvc = module.exports = {
-    "middleware": require("./lib/middleware")
+    "middleware": require("./lib/middleware"),
+    "set_model_path": function(path){
+        global.mvc_model_path = path
+    },
 }
 
 var protocols = require("./lib/protocol")
