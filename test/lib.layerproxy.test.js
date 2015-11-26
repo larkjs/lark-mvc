@@ -21,24 +21,27 @@ describe('lib/layerproxy.js', function () {
             done();
         })
     })
-/*
-    describe('the factory function `create`', function(){
-        it(' should return a instance', function(done){
-            //(layerproxy.dataService.create()).should.be.an.instanceOf(layerproxy.DataService);
-            //(layerproxy.pageService.create()).should.be.an.instanceOf(layerproxy.PageService);
-            //(layerproxy.dao.create()).should.be.an.instanceOf(layerproxy.DaoService);
-            done();
-        })
-    })
 
-    describe('the layers', function(){
-        it(' should have ability to emit events.', function(done){
-            //(layerproxy.dataService.create()).should.be.an.instanceOf(events.EventEmitter);
-            //(layerproxy.pageService.create()).should.be.an.instanceOf(events.EventEmitter);
-            //(layerproxy.dao.create()).should.be.an.instanceOf(events.EventEmitter);
+    describe('properties', function(){
+        it('dataServices should accessible', function(done){
+            (layerproxy.dataServices instanceof Object).should.equal(true);
+            done();
+        })
+
+        it('pageServices should accessible', function(done){
+            (layerproxy.pageServices instanceof Object).should.equal(true);
+            done();
+        })
+
+        it('daoServices should accessible', function(done){
+            (layerproxy.daoServices instanceof Object).should.equal(true);
+            done();
+        })
+
+        it('layers should accessible', function(done){
+            (layerproxy.layers instanceof Object).should.equal(true);
             done();
         })
     })
-    */
 });
 
