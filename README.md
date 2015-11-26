@@ -7,7 +7,10 @@ MVC for building web server using lark.js
 
     * Seperate bussiness codes into `pageService`, `dataService` and `dao`, which accord to `MVC` concept. (`C`in `MVC` implements in `lark-router`).
     * Make calling rules between MVC layers.
-    * Support hook between MVC layers.
+
+## Note:
+
+This version need node > 4.0.0
 
 ## Install:
 
@@ -20,39 +23,40 @@ npm install lark-mvc
 First of all, import web server and this module in the app. 
 
 ```
-var larkMVC = require('lark-mvc')
+var mvc = require('lark-mvc')
 var app = require('lark')
-app.use(larkMVC()) 
-app.run(3000)
+            .use(mvc.middleware) 
+            .run(3000)
 ```
 
 Secondely, write `pageService` layer to implement `V` in MVC, which generates html codes by rendering tempalate and data.
 
 ```
-var pageService = require('lark-mvc').pageService
-var demo = pageService.create('demo')
-demo.render = function(){
-    var res = ''
-    co(function *(){
-    var categroy = yield this.dataService.demo.getArticles(this.params.id)
-    var articles = yield this.dataService.demo.getArticles(categroy)
-    var data = {
-        'categroy': categroy,
-        'articles': articles
+var mvc = require('lark-mvc')
+class TestPageService extends mvc.PageService{
+    render (){
+        var res = ''
+        co(function *(){
+        var categroy = yield mvc.dataServices.demo.getArticles(this.params.id)
+        var articles = yield mvc.dataServices.demo.getArticles(categroy)
+        var data = {
+            'categroy': categroy,
+            'articles': articles
+        }
+        res = yield this.render('demo.html', data)
+        })
+        return res 
     }
-    res = yield this.render('demo.html', data)
-    })
-    return res
-})
-module.exports = demo
+}
+module.exports = TestPageService
 ```
 
 Thirdly, write `dataService` layer to implement `M` in MVC, which collects data from database and passes them to `pageService`.
 
 ```
-var dataService = require('lark-mvc').dataService
-var demo = dataService.create('demo')
-demo.getData = * function(){
+var mvc = require('lark-mvc')
+class demo extends mvc.DataService{
+    getData * (){
     // get data by dao
     articles = {}
     co (function *(){
@@ -60,20 +64,21 @@ demo.getData = * function(){
         if articles
     })
     return articles
+    }
 }
-
 module.exports = demo
 ```
 
 Forthly, write `dao` layer, which is a wrapper of accessing database.
 
 ```
-var dao = require('lark-mvc').dataService
-var demo = dao.create('dao')
-demo.getData = * function(){
-    db = redis.conn()
-    data = db.get('test-key')
-    return data
+var mvc = require('lark-mvc')
+class demo extends mvc.DataService{
+    getData * (){
+        db = redis.conn()
+        data = db.get('test-key')
+        return data
+    }
 }
 module.exports = demo
 ```
@@ -81,7 +86,7 @@ module.exports = demo
 We have all done here. And then, run the app to see the results.
 
 ```
-node --harmony app.js
+node app.js
 ```
 
 <hr>
@@ -99,9 +104,9 @@ node --harmony app.js
 在 bootstrap 中启用本模块
 
 ```
-var larkMVC = require('lark-mvc')
+var mvc = require('lark-mvc')
 var app = require('lark')
-app.use(larkMVC()) // lark 默认是支持本模块的，本行代码可以删除
+app.use(mvc.middleware) // lark 默认是支持本模块的，本行代码可以删除
 ```
 
 controller层在 lark-router中实现
@@ -115,37 +120,38 @@ model 层又分3层: pageService, dataService, dao， 功能如下:
 pageService 样例:
 
 ```
-var pageService = require('lark-mvc').pageService
-var demo = pageService.create('demo')
-demo.render = function(){
-    var res = ''
-    co(function *(){
-    var categroy = yield this.dataService.demo.getArticles(this.params.id)
-    var articles = yield this.dataService.demo.getArticles(categroy)
-    var data = {
-        'categroy': categroy,
-        'articles': articles
+var mvc = require('lark-mvc')
+class TestPageService extends mvc.PageService{
+    render (){
+        var res = ''
+        co(function *(){
+        var categroy = yield mvc.dataServices.demo.getArticles(this.params.id)
+        var articles = yield mvc.dataServices.demo.getArticles(categroy)
+        var data = {
+            'categroy': categroy,
+            'articles': articles
+        }
+        res = yield this.render('demo.html', data)
+        })
+        return res 
     }
-    res = yield this.render('demo.html', data)
-    })
-    return res
-})
-module.exports = demo
+}
+module.exports = TestPageService
 ```
 
 action 层调
 
 ```
-this.pageService.demo.render() [ok]
-this.dataService.demo.getArticles() [no]
+mvc.pageServices.demo.render() [ok]
+mvc.dataServices.demo.getArticles() [no]
 ```
 
 dataService 样例:
 
 ```
-var dataService = require('lark-mvc').dataService
-var demo = dataService.create('demo')
-demo.getData = * function(){
+var mvc = require('lark-mvc')
+class demo extends mvc.DataService{
+    getData * (){
     // get data by dao
     articles = {}
     co (function *(){
@@ -153,32 +159,24 @@ demo.getData = * function(){
         if articles
     })
     return articles
+    }
 }
-
 module.exports = demo
 ```
 
 dao 样例:
 
 ```
-var dao = require('lark-mvc').dataService
-var demo = dao.create('dao')
-demo.getData = * function(){
-    db = redis.conn()
-    data = db.get('test-key')
-    return data
+var mvc = require('lark-mvc')
+class demo extends mvc.DataService{
+    getData * (){
+        db = redis.conn()
+        data = db.get('test-key')
+        return data
+    }
 }
 module.exports = demo
 ```
-
-层之间hook样例：
-
-```
-pageSerice.on('beferDataService', function(params){
-    validate(params)
-})
-```
-
 ##CHANGELOG
 
 * 2015-11-25 V1.0.0 * 
