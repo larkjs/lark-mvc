@@ -10,6 +10,9 @@
   "scripts": {
     "test": "NODE_ENV=test ./node_modules/.bin/mocha --require should test/"
   },
+  "engines": {
+    "node": ">= 5.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/larkjs/lark-mvc.git"
