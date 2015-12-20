@@ -40,7 +40,15 @@ var larkMVC = function(options, lark){
             return;
         }
 
-        var model = require(file);
+        var model;
+        try {
+            model = require(file);
+        }
+        catch (e) {
+            console.log('Lark-MVC loading model ' + file + ' failed, skip...');
+            return;
+        }
+
         if (model instanceof Function) {
             return model(layerproxy, lark);
         }
