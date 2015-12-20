@@ -29,6 +29,7 @@
     "rd": "~0.0.2"
   },
   "devDependencies": {
+    "easy-babel": "^1.0.1",
     "mocha": "^2.0.1",
     "should": "^4.4.1",
     "supertest": "^0.15.0"
