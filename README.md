@@ -34,7 +34,7 @@ import MVC from 'lark-mvc';
 const service = MVC.getInstance().createService();
 const access = service.access();
 
-service.render = async (ctx) {
+service.render = async (ctx) => {
     let res = '';
     let categroy = await access.data.demo.getArticles(ctx.params.id);
     let articles = await access.data.demo.getArticles(categroy);
