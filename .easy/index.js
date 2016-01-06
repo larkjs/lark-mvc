@@ -3,30 +3,55 @@
  **/
 'use strict';
 
-import _debug   from 'debug';
-import path     from 'path';
-import savable  from 'save-instance';
-import Layer    from './lib/layer';
-import Service  from './lib/service';
-import defaultConfig    from './conf/default';
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
-const debug = _debug("lark-mvc");
+var _debug2 = require('debug');
 
-class MVC extends Layer {
-    constructor (modelPath, options = defaultConfig) {
+var _debug3 = _interopRequireDefault(_debug2);
+
+var _path = require('path');
+
+var _path2 = _interopRequireDefault(_path);
+
+var _saveInstance = require('save-instance');
+
+var _saveInstance2 = _interopRequireDefault(_saveInstance);
+
+var _layer = require('./lib/layer');
+
+var _layer2 = _interopRequireDefault(_layer);
+
+var _service = require('./lib/service');
+
+var _service2 = _interopRequireDefault(_service);
+
+var _default = require('./conf/default');
+
+var _default2 = _interopRequireDefault(_default);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const debug = (0, _debug3.default)("lark-mvc");
+
+class MVC extends _layer2.default {
+    constructor(modelPath) {
+        let options = arguments.length <= 1 || arguments[1] === undefined ? _default2.default : arguments[1];
+
         debug("MVC: constructing");
         if (!modelPath || 'string' !== typeof modelPath) {
             modelPath = 'models';
         }
-        if (!path.isAbsolute(modelPath)) {
-            modelPath = path.join(path.dirname(process.mainModule.filename), modelPath);
+        if (!_path2.default.isAbsolute(modelPath)) {
+            modelPath = _path2.default.join(_path2.default.dirname(process.mainModule.filename), modelPath);
         }
         super({});
         debug("MVC: loading models");
         this._layers = {};
         const entrylayers = {};
         for (const layername in options) {
-            const dirname = path.join(modelPath, options[layername].path || '');
+            const dirname = _path2.default.join(modelPath, options[layername].path || '');
             debug("MVC: layer " + layername + ", path is " + dirname);
             for (const _layername in this._layers) {
                 const layer = this._layers[_layername];
@@ -39,7 +64,7 @@ class MVC extends Layer {
                 }
             }
             debug("MVC: creating layer " + layername);
-            this._layers[layername] = new Layer(this);
+            this._layers[layername] = new _layer2.default(this);
             entrylayers[layername] = this._layers[layername];
             debug("MVC: loading directory " + dirname);
             this._layers[layername].load(dirname);
@@ -52,13 +77,34 @@ class MVC extends Layer {
             if (!Array.isArray(accessList)) {
                 accessList = [accessList];
             }
-            for (const accessLayername of accessList) {
-                if ('string' !== typeof accessLayername) {
-                    continue;
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = accessList[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    const accessLayername = _step.value;
+
+                    if ('string' !== typeof accessLayername) {
+                        continue;
+                    }
+                    debug("MVC: adding access layer " + accessLayername + " to " + layername);
+                    layer.addAccessLayer(accessLayername, this._layers[accessLayername]);
+                    delete entrylayers[accessLayername];
                 }
-                debug("MVC: adding access layer " + accessLayername + " to " + layername);
-                layer.addAccessLayer(accessLayername, this._layers[accessLayername]);
-                delete entrylayers[accessLayername];
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
             }
         }
         debug("MVC: adding entry access layers");
@@ -68,10 +114,10 @@ class MVC extends Layer {
             this.addAccessLayer(layername, layer);
         }
     }
-    access () {
+    access() {
         return this._accessWithPath();
     }
-    _accessWithPath (modulePath) {
+    _accessWithPath(modulePath) {
         debug("MVC: access");
         this._accessed = this._accessed || {};
         modulePath = modulePath || this._currentModulePath || null;
@@ -83,7 +129,7 @@ class MVC extends Layer {
             debug("MVC: using cache");
             return this._accessed[modulePath];
         }
-        for (const layername in  this._layers) {
+        for (const layername in this._layers) {
             const layer = this._layers[layername];
             const dirname = layer.path;
             if (!dirname) {
@@ -98,11 +144,11 @@ class MVC extends Layer {
         debug("MVC: no layer found, use entry layer");
         return super.access();
     }
-    createService () {
-        return new Service(this, this._currentModulePath);
+    createService() {
+        return new _service2.default(this, this._currentModulePath);
     }
 }
-savable(MVC);
+(0, _saveInstance2.default)(MVC);
 
 debug("MVC: load");
-export default MVC;
+exports.default = MVC;

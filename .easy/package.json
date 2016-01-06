@@ -1,14 +1,14 @@
 {
     "name": "lark-mvc",
-    "version": "1.0.0",
+    "version": "0.4.7",
     "description": "MVC for building web server with lark.js",
-    "main": ".easy",
+    "main": "index.js",
     "directories": {
         "example": "examples",
         "test": "test"
     },
     "scripts": {
-        "test": "cd .easy && rm -rf node_modules && ln -s ../node_modules node_modules && NODE_ENV=test ./node_modules/.bin/mocha --harmony-generators --require should test/"
+        "test": "NODE_ENV=test ./node_modules/.bin/mocha --harmony-generators --require should test/"
     },
     "repository": {
         "type": "git",
@@ -28,6 +28,7 @@
     },
     "dependencies": {
         "chalk": "^1.1.1",
+        "extend": "^3.0.0",
         "readdir": "0.0.13",
         "save-instance": "0.0.3"
     },
@@ -42,11 +43,5 @@
     "readmeFilename": "README.md",
     "engines": {
         "node": ">=4.0"
-    },
-    "easy": {
-        "main": "index.js",
-        "scripts": {
-            "test": "NODE_ENV=test ./node_modules/.bin/mocha --harmony-generators --require should test/"
-        }
     }
 }
