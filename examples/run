@@ -1,4 +1,0 @@
-#/bin/bash
-echo 'node --harmony index.js'
-echo 'app start listening at http://localhost:3000'
-node --harmony index.js

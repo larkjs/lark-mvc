@@ -1,102 +1,108 @@
-var path = require('path');
-var rd = require('rd');
-var layerproxy = require("./lib/layerproxy")
-
 /**
- * @param options
- * @param options.path {string} It locate to models, where files will automate load if its filetype is js.  
- */
+ * Lark-mvc
+ **/
+'use strict';
 
-var larkMVC = function(options, lark){
-    if (!options || !options.path) {
-        var _path = 'models'
-    }else{
-        var _path = options.path
-    }
-    if (process.mainModule) {
-        _path = path.join(path.dirname(process.mainModule.filename), _path);
-    }
-    if (_path[_path.length - 1] !== '/') {
-        _path += '/';
-    }
-    rd.eachFileFilterSync(_path, /\.js$/, function (file) {
-        if (0 !== file.indexOf(_path)) {
-            throw new Error("File path " + file + " not expected, should be under " + _path);
-        }
-        var filename = path.basename(file)
-        if (filename && filename[0] === '.') {
-            return;
-        }        
-        var relativePath = file.slice(_path.length);
-        var _pathsplit = relativePath.split('/');
-        if (_pathsplit.length <= 1) {
-            throw new Error('Invalid model path : ' + _path);
-        }
-        var filename = _pathsplit[_pathsplit.length - 1];
-        _pathsplit[_pathsplit.length - 1] = path.basename(filename, path.extname(filename));
+import _debug   from 'debug';
+import path     from 'path';
+import savable  from 'save-instance';
+import Layer    from './lib/layer';
+import Service  from './lib/service';
+import defaultConfig    from './conf/default';
 
-        var modelproxy = createModel(layerproxy, _pathsplit, null, options);
-        if (!modelproxy) {
-            return;
-        }
+const debug = _debug("lark-mvc");
 
-        var model;
-        try {
-            model = require(file);
+class MVC extends Layer {
+    constructor (modelPath, options = defaultConfig) {
+        debug("MVC: constructing");
+        if (!modelPath || 'string' !== typeof modelPath) {
+            modelPath = 'models';
         }
-        catch (e) {
-            console.log('Lark-MVC loading model ' + file + ' failed, skip...');
-            return;
+        if (!path.isAbsolute(modelPath)) {
+            modelPath = path.join(path.dirname(process.mainModule.filename), modelPath);
         }
-
-        if (model instanceof Function) {
-            return model(layerproxy, lark);
-        }
-        else if (model instanceof Object && !Array.isArray(model)) {
-            for (var property in model) {
-                if (!!modelproxy[property]) {
-                    throw new Error('Property ' + property + ' in mvc.xxx in use!');
+        super({});
+        debug("MVC: loading models");
+        this._layers = {};
+        const entrylayers = {};
+        for (const layername in options) {
+            const dirname = path.join(modelPath, options[layername].path || '');
+            debug("MVC: layer " + layername + ", path is " + dirname);
+            for (const _layername in this._layers) {
+                const layer = this._layers[_layername];
+                const layerPath = layer.path;
+                if (!layerPath) {
+                    continue;
                 }
-                modelproxy[property] = model[property];
+                if (layerPath.indexOf(dirname) === 0 || dirname.indexOf(layerPath) === 0) {
+                    throw new Error("Can not add layer with path " + dirname + ", conflict with " + layerPath);
+                }
+            }
+            debug("MVC: creating layer " + layername);
+            this._layers[layername] = new Layer(this);
+            entrylayers[layername] = this._layers[layername];
+            debug("MVC: loading directory " + dirname);
+            this._layers[layername].load(dirname);
+        }
+        debug("MVC: add access to each layer");
+        for (const layername in options) {
+            debug("MVC: adding access layers to " + layername);
+            const layer = this._layers[layername];
+            let accessList = options[layername].access;
+            if (!Array.isArray(accessList)) {
+                accessList = [accessList];
+            }
+            for (const accessLayername of accessList) {
+                if ('string' !== typeof accessLayername) {
+                    continue;
+                }
+                debug("MVC: adding access layer " + accessLayername + " to " + layername);
+                layer.addAccessLayer(accessLayername, this._layers[accessLayername]);
+                delete entrylayers[accessLayername];
             }
         }
-    });
-    return function*(next) {
-        this.pageServices = layerproxy.pageServices
-        yield next
-    };
-}
-
-function createModel (layerproxy, _pathsplit, type, options) {
-    var type = type || _pathsplit.shift();
-    if (options && options.ignore) {
-        if (!Array.isArray(options.ignore)) {
-            options.ignore = [options.ignore];
+        debug("MVC: adding entry access layers");
+        for (const layername in entrylayers) {
+            debug("MVC: adding access layer " + layername + " to entry layer");
+            const layer = this._layers[layername];
+            this.addAccessLayer(layername, layer);
         }
-        for (var i = 0; i < options.ignore.length; i++) {
-            var ignore = options.ignore[i];
-            if (_pathsplit.indexOf(ignore) >=0) {
-                return;
+    }
+    access () {
+        return this._accessWithPath();
+    }
+    _accessWithPath (modulePath) {
+        debug("MVC: access");
+        this._accessed = this._accessed || {};
+        modulePath = modulePath || this._currentModulePath || null;
+        debug("MVC: caller is " + modulePath);
+        if (!modulePath) {
+            return super.access();
+        }
+        if (this._accessed[modulePath]) {
+            debug("MVC: using cache");
+            return this._accessed[modulePath];
+        }
+        for (const layername in  this._layers) {
+            const layer = this._layers[layername];
+            const dirname = layer.path;
+            if (!dirname) {
+                continue;
+            }
+            if (modulePath.indexOf(dirname) === 0) {
+                debug("MVC: layer found");
+                this._accessed[modulePath] = layer.access();
+                return layer.access();
             }
         }
+        debug("MVC: no layer found, use entry layer");
+        return super.access();
     }
-    var name = _pathsplit.join('/');
-    switch (type) {
-        case 'dao' :
-            type = 'daoService';
-            break;
-        case 'dataServices' :
-            type = 'dataService';
-            break;
-        case 'pageServices' :
-            type = 'pageService';
-            break;
-        default :
-            throw new Error('Unknown model type ' + type);
+    createService () {
+        return new Service(this, this._currentModulePath);
     }
-    return layerproxy[type].create(name);
 }
+savable(MVC);
 
-var output = layerproxy;
-output.middleware = larkMVC
-module.exports = output
+debug("MVC: load");
+export default MVC;
