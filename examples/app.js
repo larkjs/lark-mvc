@@ -5,7 +5,7 @@
 
 import _debug	from 'debug';
 import Koa		from 'koa';
-import mvc 		from '../middleware';
+import MVC 		from '..';
 
 const debug = _debug('lark-mvc');
 
@@ -32,7 +32,7 @@ const config = {
 	},
 }
 
-app.use(mvc('models', config));
+app.use(MVC.middleware('models', config));
 app.use(async (ctx, next) => {
   if (ctx.url.match(/bar/)) {
 	    debug("Example: page.bar.execute with ctx");

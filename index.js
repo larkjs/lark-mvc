@@ -3,11 +3,12 @@
  **/
 'use strict';
 
-import _debug   from 'debug';
-import path     from 'path';
-import savable  from 'save-instance';
-import Layer    from './lib/layer';
-import Service  from './lib/service';
+import _debug           from 'debug';
+import path             from 'path';
+import savable          from 'save-instance';
+import Layer            from './lib/layer';
+import Service          from './lib/service';
+import middleware       from './lib/middleware';
 import defaultConfig    from './conf/default';
 
 const debug = _debug("lark-mvc");
@@ -103,6 +104,7 @@ class MVC extends Layer {
     }
 }
 savable(MVC);
+MVC.middleware = middleware;
 
 debug("MVC: load");
 export default MVC;
