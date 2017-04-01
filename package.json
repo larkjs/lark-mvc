@@ -14,7 +14,8 @@
   "keywords": [
     "lark.js",
     "lark",
-    "koa"
+    "koa",
+    "mvc"
   ],
   "author": {
     "name": "lark.js Team"
@@ -26,7 +27,13 @@
   "dependencies": {
     "lark-config": "^2.4.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "debug": "^2.6.3",
+    "eslint": "^3.19.0",
+    "istanbul": "^1.1.0-alpha.1",
+    "mocha": "^3.2.0",
+    "should": "^11.2.1"
+  },
   "homepage": "https://www.npmjs.com/package/lark-mvc",
   "readmeFilename": "README.md",
   "engines": {
