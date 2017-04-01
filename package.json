@@ -1,14 +1,11 @@
 {
   "name": "lark-mvc",
-  "version": "1.0.2",
-  "description": "MVC for building web server with lark.js",
-  "main": "index.js",
-  "directories": {
-    "example": "examples",
-    "test": "test"
-  },
+  "version": "3.0.0",
+  "description": "MVC for building web service",
+  "main": "./lib/MVC",
   "scripts": {
-    "test": "NODE_ENV=test ./node_modules/.bin/mocha --harmony --require should test/"
+    "test": "./node_modules/.bin/eslint index.js example/** lib/** && ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- --require should --recursive test",
+    "debug": "node --inspect-brk=9229 example/app.js"
   },
   "repository": {
     "type": "git",
@@ -16,24 +13,31 @@
   },
   "keywords": [
     "lark.js",
-    "koa"
+    "lark",
+    "koa",
+    "mvc"
   ],
   "author": {
     "name": "lark.js Team"
   },
-  "license": "FreeBSD",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/larkjs/lark-mvc/issues"
   },
   "dependencies": {
-    "rd": "~0.0.2"
+    "lark-config": "^2.4.0"
   },
   "devDependencies": {
-    "mocha": "^2.0.1",
-    "should": "^4.4.1",
-    "supertest": "^0.15.0"
+    "debug": "^2.6.3",
+    "eslint": "^3.19.0",
+    "istanbul": "^1.1.0-alpha.1",
+    "koa": "^2.0.0-alpha.8",
+    "mocha": "^3.2.0",
+    "should": "^11.2.1"
   },
   "homepage": "https://www.npmjs.com/package/lark-mvc",
-  "readme": "MVC for building web server using lark.js\n\n  [![NPM version][npm-image]][npm-url]\n  [![build status][travis-image]][travis-url]\n\n## Features:\n\n    * Seperate bussiness codes into `pageService`, `dataService` and `dao`, which accord to `MVC` concept. (`C`in `MVC` implements in `lark-router`).\n    * Make calling rules between MVC layers.\n    * Support hook between MVC layers.\n\n## Install:\n\n```\nnpm install lark-mvc\n```\n\n## Example:\n\nFirst of all, import web server and this module in the app. \n\n```\nvar larkMVC = require('lark-mvc')\nvar app = require('lark')\napp.use(larkMVC()) \napp.run(3000)\n```\n\nSecondely, write `pageService` layer to implement `V` in MVC, which generates html codes by rendering tempalate and data.\n\n```\nvar pageService = require('lark-mvc').pageService\nvar demo = pageService.create('demo')\ndemo.render = function(){\n    var res = ''\n    co(function *(){\n    var categroy = yield this.dataService.demo.getArticles(this.params.id)\n    var articles = yield this.dataService.demo.getArticles(categroy)\n    var data = {\n        'categroy': categroy,\n        'articles': articles\n    }\n    res = yield this.render('demo.html', data)\n    })\n    return res\n})\nmodule.exports = demo\n```\n\nThirdly, write `dataService` layer to implement `M` in MVC, which collects data from database and passes them to `pageService`.\n\n```\nvar dataService = require('lark-mvc').dataService\nvar demo = dataService.create('demo')\ndemo.getData = * function(){\n    // get data by dao\n    articles = {}\n    co (function *(){\n        var articles = yeild this.dao.demo.get(this.request.id);\n        if articles\n    })\n    return articles\n}\n\nmodule.exports = demo\n```\n\nForthly, write `dao` layer, which is a wrapper of accessing database.\n\n```\nvar dao = require('lark-mvc').dataService\nvar demo = dao.create('dao')\ndemo.getData = * function(){\n    db = redis.conn()\n    data = db.get('test-key')\n    return data\n}\nmodule.exports = demo\n```\n\nWe have all done here. And then, run the app to see the results.\n\n```\nnode --harmony app.js\n```\n\n<hr>\n\n一个支持MVC模式的中间件\n\n## 功能:\n\n    * MVC 分层逻辑\n    * app中只能相邻层调用，不允许跨层调用\n    * hook功能支持：支持hook功能，在跨层调用前后，发送相应事件，添加自定义逻辑。\n\n## 示例:\n\n在 bootstrap 中启用本模块\n\n```\nvar larkMVC = require('lark-mvc')\nvar app = require('lark')\napp.use(larkMVC()) // lark 默认是支持本模块的，本行代码可以删除\n```\n\ncontroller层在 lark-router中实现\nview 层在template 模板目录里\nmodel 层又分3层: pageService, dataService, dao， 功能如下:\n\n    * pageService 负责页面数据逻辑, 被action调用，调用dataService\n    * dataService 负责业务数据逻辑，被pageService调用，调用dao\n    * dao 负责数据库相关业务逻辑\n\npageService 样例:\n\n```\nvar pageService = require('lark-mvc').pageService\nvar demo = pageService.create('demo')\ndemo.render = function(){\n    var res = ''\n    co(function *(){\n    var categroy = yield this.dataService.demo.getArticles(this.params.id)\n    var articles = yield this.dataService.demo.getArticles(categroy)\n    var data = {\n        'categroy': categroy,\n        'articles': articles\n    }\n    res = yield this.render('demo.html', data)\n    })\n    return res\n})\nmodule.exports = demo\n```\n\naction 层调\n\n```\nthis.pageService.demo.render() [ok]\nthis.dataService.demo.getArticles() [no]\n```\n\ndataService 样例:\n\n```\nvar dataService = require('lark-mvc').dataService\nvar demo = dataService.create('demo')\ndemo.getData = * function(){\n    // get data by dao\n    articles = {}\n    co (function *(){\n        var articles = yeild this.dao.demo.get(this.request.id);\n        if articles\n    })\n    return articles\n}\n\nmodule.exports = demo\n```\n\ndao 样例:\n\n```\nvar dao = require('lark-mvc').dataService\nvar demo = dao.create('dao')\ndemo.getData = * function(){\n    db = redis.conn()\n    data = db.get('test-key')\n    return data\n}\nmodule.exports = demo\n```\n\n层之间hook样例：\n\n```\npageSerice.on('beferDataService', function(params){\n    validate(params)\n})\n```\n\n[npm-image]: https://img.shields.io/npm/v/lark-mvc.svg?style=flat-square\n[npm-url]: https://npmjs.org/package/lark-mvc\n\n[travis-image]: https://img.shields.io/travis/larkjs/lark-mvc/master.svg?style=flat-square\n[travis-url]: https://travis-ci.org/larkjs/lark-mvc\n",
-  "readmeFilename": "README.md"
+  "readmeFilename": "README.md",
+  "engines": {
+    "node": ">=7.6.0"
+  }
 }
