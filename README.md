@@ -9,7 +9,7 @@ A manager for MVC design.
 
 ## How to use
 
-Firts define some module, then dispatch works.
+First define some module, then dispatch works.
 
 Define a controller class inherits from `LarkMVC.Controller`, then implements the method `main`.
 
