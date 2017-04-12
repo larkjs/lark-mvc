@@ -68,7 +68,7 @@ const mvc = new MVC();
 
 mvc.use(HelloAction)
    .use(Host)
-   .use(Guest, { dirname: 'person' })
+   .use(Guest, { name: 'person/Guest' })
    .use(MyView);
 
 mvc.dispatch(HelloAction, 'Stranger')
