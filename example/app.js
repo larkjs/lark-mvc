@@ -39,7 +39,7 @@ class Host extends MVC.Model {
     }
 }
 
-class Guest extends MVC.Model {
+class MyGuest extends MVC.Model {
 
     constructor(name) {
         super();
@@ -68,7 +68,7 @@ const mvc = new MVC();
 
 mvc.use(HelloAction)
    .use(Host)
-   .use(Guest, { name: 'person/Guest' })
+   .use(MyGuest, { name: 'person/Guest' })
    .use(MyView);
 
 mvc.dispatch(HelloAction, 'Stranger')

@@ -1,6 +1,6 @@
 {
   "name": "lark-mvc",
-  "version": "3.1.1",
+  "version": "3.1.2",
   "description": "MVC for building web service",
   "main": "./lib/MVC",
   "scripts": {

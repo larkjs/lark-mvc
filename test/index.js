@@ -9,6 +9,12 @@ describe('mvc', () => {
     it('should have properties', (done) => {
         const controllers = mvc.controller();
         controllers.should.be.an.instanceof(Object);
+        controllers.HelloAction.name.should.be.exactly('HelloAction');
+        const models = mvc.model();
+        models.Host.name.should.be.exactly('Host');
+        models.person.Guest.name.should.be.exactly('MyGuest');
+        const views = mvc.views.config;
+        views.MyView.constructor.name.should.be.exactly('MyView');
         done();
     });
 });
