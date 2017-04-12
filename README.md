@@ -52,7 +52,7 @@ Register them
 const app = new Koa();
 const mvc = new LarkMVC();
 
-mvc.use(ShowIntroduction, Person, MyView);
+mvc.use(ShowIntroduction).use(Person).use(MyView);
 app.use(async (...args) => await mvc.dispatch('ShowIntroduction', ...args)).listen(3000);
 ```
 
