@@ -25,7 +25,7 @@
     "url": "https://github.com/larkjs/lark-mvc/issues"
   },
   "dependencies": {
-    "lark-config": "^2.4.0"
+    "lark-config": "^2.5.1"
   },
   "devDependencies": {
     "debug": "^2.6.3",
