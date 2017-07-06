@@ -1,7 +1,7 @@
 'use strict';
 
 const Koa = require('koa');
-const LarkMVC = require('..');
+const LarkMVC = require('lark-mvc');
 
 class ShowIntroduction extends LarkMVC.Controller {
     async main(ctx) {

@@ -4,7 +4,7 @@
 'use strict';
 process.mainModule = module;
 
-const MVC = require('..');
+const MVC = require('lark-mvc');
 
 class HelloAction extends MVC.Controller {
 

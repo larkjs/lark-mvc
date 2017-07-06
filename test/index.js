@@ -3,7 +3,7 @@
  **/
 'use strict';
 
-const mvc = require('../example/app');
+const mvc = require('lark-mvc/example');
 
 describe('mvc', () => {
     it('should have properties', (done) => {
