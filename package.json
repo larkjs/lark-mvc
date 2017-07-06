@@ -4,7 +4,7 @@
   "description": "MVC for building web service",
   "main": "./lib/MVC",
   "scripts": {
-    "lint": "./node_modules/.bin/eslint index.js example/**",
+    "lint": "./node_modules/.bin/eslint index.js example/** lib/**",
     "pretest": "npm run lint && npm link && npm link lark-mvc",
     "test": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- --require should --recursive test",
     "posttest": "npm unlink",
