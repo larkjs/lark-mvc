@@ -1,7 +1,10 @@
 MVC for building web server using lark.js
 
-  [![NPM version][npm-image]][npm-url]
-  [![build status][travis-image]][travis-url]
+[![NPM version][npm-image]][npm-url]
+[![build status][travis-image]][travis-url]
+[![Test coverage][coveralls-image]][coveralls-url]
+[![NPM downloads][downloads-image]][npm-url]
+[![Node.js dependencies][david-image]][david-url]
 
 # Lark-MVC
 
@@ -68,6 +71,10 @@ app.use(async (...args) => {
 
 [npm-image]: https://img.shields.io/npm/v/lark-mvc.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/lark-mvc
-
 [travis-image]: https://img.shields.io/travis/larkjs/lark-mvc/master.svg?style=flat-square
 [travis-url]: https://travis-ci.org/larkjs/lark-mvc
+[downloads-image]: https://img.shields.io/npm/dm/lark-mvc.svg?style=flat-square
+[david-image]: https://img.shields.io/david/larkjs/lark-mvc.svg?style=flat-square
+[david-url]: https://david-dm.org/larkjs/lark-mvc
+[coveralls-image]: https://img.shields.io/codecov/c/github/larkjs/lark-mvc.svg?style=flat-square
+[coveralls-url]: https://codecov.io/github/larkjs/lark-mvc
