@@ -3,29 +3,65 @@
  **/
 'use strict';
 
-const mvc = require('lark-mvc/example');
+const MVC = require('lark-mvc');
 
-describe('mvc', () => {
-    it('should have properties', (done) => {
-        const controllers = mvc.controller();
-        controllers.should.be.an.instanceof(Object);
-        controllers.HelloAction.name.should.be.exactly('HelloAction');
-        const models = mvc.model();
-        models.Host.name.should.be.exactly('Host');
-        models.person.Guest.name.should.be.exactly('MyGuest');
-        const views = mvc.views.config;
-        views.MyView.constructor.name.should.be.exactly('MyView');
-        done();
+const mvc = new MVC();    //using default config
+
+class HelloPage extends mvc.Page {
+
+    async main() {
+        const message = await this.mvc.Data.Hello.getMessage();
+        return HelloPage.mvc.PageHelper.toUpperCase(message);
+    }
+
+    accessDao() {
+        this.mvc.Dao.HelloDao.foo();
+    }
+
+}
+
+
+class HelloData extends mvc.Data {
+
+    static async getMessage() {
+        return Promise.resolve('Hello World');
+    }
+
+}
+
+class Helper extends mvc.PageHelper {
+    static toUpperCase(message) {
+        return message.toUpperCase();
+    }
+}
+
+class HelloDao extends mvc.Dao {
+    static foo () {}
+}
+
+
+describe('common use', () => {
+    it('should be ok using HelloPage and HelloData', async() => {
+        mvc.use(HelloPage).use(HelloData, { name: 'Hello' }).use(Helper, { unique: true });
+    });
+
+    it('should get the data from message by calling page', async () => {
+        const helloPage = new HelloPage();
+        const message = await helloPage.main();
+        message.should.be.exactly('HELLO WORLD');
+    });
+
+    it('should not be allowed to access modules un-accessable', async () => {
+        const helloPage = new HelloPage();
+        let error = {};
+        try {
+            helloPage.accessDao();
+        }
+        catch (e) {
+            error = e;
+        }
+        error.should.be.an.instanceOf(Error);
     });
 });
 
-describe('mvc.dispatch', () => {
-    it('should return the result as expectd', async () => {
-        const now = Date.now();
-        const message = await mvc.dispatch('HelloAction', 'Yu Qi');
-        message.should.be.an.instanceof(String);
-        message.should.be.exactly('The visitor said: "Hello, my name is Yu Qi. Nice to meet you." Then the host said: "Oh, welcome! My name is Sun Haohao, the host of this site."');
-        let delay = Date.now() - now;
-        (delay >= 40 && delay <= 60).should.be.ok;
-    });
-});
+

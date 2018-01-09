@@ -9,24 +9,31 @@ A manager for MVC design.
 
 ## How to use
 
-First define some module, then dispatch works.
+* see `example/koa.js` in source code
 
-Define a controller class inherits from `LarkMVC.Controller`, then implements the method `main`.
+First define mvc and some module, then dispatch works.
 
 ```
-class ShowIntroduction extends LarkMVC.Controller {
+const MVC = require('lark-mvc');
+const mvc = new MVC();    // using default configs
+```
+
+Define a Page class inherits from `mvc.Page` as an controller
+
+```
+class ShowIntroduction extends mvc.Page {
     async main(ctx, next) {
-        const person = new this.model.Person('Sun Haohao');
-        ctx.body = await this.view().render(person);
-        return;
+        const person = new this.mvc.Data.Person('Sun Haohao');
+        ctx.body = await this.mvc.View.render(person);
+        await next();
     }
 }
 ```
 
-Define a model `Person`
+Define a Data `Person` as model
 
 ```
-class Person extends LarkMVC.Model {
+class Person extends mvc.Data {
     constructor(name) {
         super();
         this.name = name;
@@ -40,7 +47,7 @@ class Person extends LarkMVC.Model {
 Define a view
 
 ```
-class MyView extends LarkMVC.View {
+class MyView extends mvc.View {
     async render(person) {
         return await person.introduction();
     }
@@ -53,7 +60,10 @@ const app = new Koa();
 const mvc = new LarkMVC();
 
 mvc.use(ShowIntroduction).use(Person).use(MyView);
-app.use(async (...args) => await mvc.dispatch('ShowIntroduction', ...args)).listen(3000);
+app.use(async (...args) => {
+    const showIntroduction = new ShowIntroduction();
+    await showIntroduction.main(...args);
+}).listen(3000);
 ```
 
 [npm-image]: https://img.shields.io/npm/v/lark-mvc.svg?style=flat-square

@@ -1,78 +1,43 @@
 /**
- * Example of LarkMVC control
+ * Demo of LarkMVC
  **/
 'use strict';
-process.mainModule = module;
 
-const MVC = require('lark-mvc');
+const debug = require('debug')('lark-mvc.example');
+const MVC   = require('lark-mvc');
 
-class HelloAction extends MVC.Controller {
 
-    async main(visitor) {
-        const guest = new this.model.person.Guest(visitor);
-        let message = 'The visitor said: "';
-        message += await this.view.render(guest.introduce());
-        message += '" Then the host said: "';
-        message += await this.getView('MyView').render(guest.host.welcome());
-        message += '"';
+const mvc = new MVC();    // using default config
 
-        const guest2 = new (this.getModel('person/Guest'))(visitor);
-        guest2.introduce();
-        return message;
-    }
 
-}
-
-class Host extends MVC.Model {
-
-    static getInstance() {
-        return new Host();
-    }
+class HelloPage extends mvc.Page {
 
     constructor() {
         super();
-        this.name = 'Sun Haohao';
+        debug('construct HelloPage');
     }
 
-    welcome() {
-        return `Oh, welcome! My name is ${this.name}, the host of this site.`;
-    }
-}
-
-class MyGuest extends MVC.Model {
-
-    constructor(name) {
-        super();
-        this.name = name;
-        this.host = this.getModel('Host').getInstance();
-        this.host2 = this.model.Host.getInstance();
-    }
-
-    introduce() {
-        return `Hello, my name is ${this.name}. Nice to meet you.`;
-    }
-
-}
-
-class MyView extends MVC.View {
-
-    async render(message) {
-        await new Promise(resolve => setTimeout(resolve, 50));
-        return message;
+    async main() {
+        console.log(this.mvc);
+        const message = await this.mvc.Data.HelloData.getMessage();
+        console.log(message);
     }
 
 }
 
 
-const mvc = new MVC();
+class HelloData extends mvc.Data {
 
-mvc.use(HelloAction)
-   .use(Host)
-   .use(MyGuest, { name: 'person/Guest' })
-   .use(MyView);
+    static async getMessage() {
+        return Promise.resolve('Hello World');
+    }
 
-mvc.dispatch(HelloAction, 'Stranger')
-;//   .then(message => console.log(message))
-//   .catch(e => console.log(e));
+}
 
-module.exports = mvc;
+
+mvc.use(HelloPage).use(HelloData);
+
+
+const helloPage = new HelloPage();
+
+helloPage.main().catch(error => console.log(error.stack));

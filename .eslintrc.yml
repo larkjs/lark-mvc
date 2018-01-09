@@ -25,11 +25,11 @@ rules:
       identifiers: true
       lang: en_US
       skipWords:
-        - args
-        - ctx
-        - fs
-        - haohao
-        - koa
+        - accessor
+        - dao
+        - lodash
         - mvc
+        - param
+        - src
 plugins:
   - spellcheck
