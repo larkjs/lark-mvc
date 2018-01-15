@@ -39,7 +39,8 @@
     "vi-misc": "^1.13.2"
   },
   "devDependencies": {
-    "koa": "^2.4.1"
+    "koa": "^2.4.1",
+    "lark-autoloader": "^2.1.0"
   },
   "homepage": "https://www.npmjs.com/package/lark-mvc",
   "readmeFilename": "README.md",

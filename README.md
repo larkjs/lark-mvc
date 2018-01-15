@@ -69,6 +69,19 @@ app.use(async (...args) => {
 }).listen(3000);
 ```
 
+In most case we don't register modules one by one manually. We can use loader to load all modules, like this
+
+```
+const loader = require('lark-autoloader');
+
+const app = new Koa();
+const mvc = new LarkMVC();
+const loader = new LarkAutoLoader(mvc, (filePath, keys) => {
+    mvc.use(require(filePath), { name: keys.join('/') });
+});
+await loader.load('path/to/my/module');
+```
+
 [npm-image]: https://img.shields.io/npm/v/lark-mvc.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/lark-mvc
 [travis-image]: https://img.shields.io/travis/larkjs/lark-mvc/master.svg?style=flat-square
